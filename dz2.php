@@ -1,12 +1,49 @@
 <?php
-/* Поиск элемента массива с известным индексом */
-/* Так как мы знаем конкретный индекс необходимого элемента массива, сложность алгоритма будет
-равна O(1), потребуется одна операция вне зависимости от количества элементов в массиве */
+$arr = range(0, 1000000);
+shuffle($arr);
 
-/* Дублирование одномерного массива через foreach (В примере применяется тот же массив $array) */
-/* Не особо уверен в правильности данного подхода, реализовал первое пришедшее в голову решение, сложность алгоритма
-будет равна O(N) * O(1) = O(1N) и так как множитель можно опустить получим сложность равную O(N) */
+$pos = binarySearch($myArray, $num);
+while ($pos != null) {
+    unset($arr[$pos]);
+    $pos = binarySearch($myArray, $num);
+}
 
-/* Рекурсивная функция нахождения факториала числа */
-/* Сложность рекурсивных алгоритмов зависит не только от сложности внутренних циклов, но и от количества итераций рекурсии,
-в итоге получим O(5N) без учета одноразовых и отбросив множитель получим сложность алгоитма равную O(N)*/
+function binarySearch($myArray, $num)
+{
+    $left = 0;
+    $right = count($myArray) - 1;
+    while ($left <= $right) {
+        $middle = floor(($right + $left) / 2);
+        if ($myArray[$middle] == $num) {
+            return $middle;
+        } elseif ($myArray[$middle] > $num) {
+            $right = $middle - 1;
+        } elseif ($myArray[$middle] < $num) {
+            $left = $middle + 1;
+        }
+    }
+    return null;
+}
+
+function InterpolationSearch($myArray, $num)
+{
+    $start = 0;
+    $last = count($myArray) - 1;
+    while (($start <= $last) && ($num >= $myArray[$start])
+        && ($num <= $myArray[$last])
+    ) {
+        $pos = floor($start + (
+            (($last - $start) / ($myArray[$last] - $myArray[$start]))
+            * ($num - $myArray[$start])
+        ));
+        if ($myArray[$pos] == $num) {
+            return $pos;
+        }
+        if ($myArray[$pos] < $num) {
+            $start = $pos + 1;
+        } else {
+            $last = $pos - 1;
+        }
+    }
+    return null;
+}
